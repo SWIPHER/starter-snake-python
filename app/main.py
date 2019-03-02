@@ -4,7 +4,7 @@ import random
 import bottle
 
 from api import ping_response, start_response, move_response, end_response
-
+lag=5
 @bottle.route('/')
 def index():
     return '''
@@ -14,12 +14,7 @@ def index():
 
 @bottle.route('/static/<path:path>')
 def static(path):
-    """
-    Given a path, return the static file located relative
-    to the static folder.
-
-    This can be used to return the snake head URL in an API response.
-    """
+    
     return bottle.static_file(path, root='static/')
 
 @bottle.post('/ping')
@@ -33,7 +28,14 @@ def ping():
 @bottle.post('/start')
 def start():
     data = bottle.request.json
-
+    global lag
+    food=data['board']['food']
+    '''[1-n][x,y]'''
+    you=data['you']['body']
+        
+    
+    '''x,y'''
+    
     """
     TODO: If you intend to have a stateful snake AI,
             initialize your snake state here using the
@@ -41,7 +43,7 @@ def start():
     """
     print(json.dumps(data))
 
-    color = "#00FF00"
+    color = "#FFCCCC"
 
     return start_response(color)
 
@@ -49,17 +51,18 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-
-    """
-    TODO: Using the data from the endpoint request object, your
-            snake AI must choose a direction to move in.
-    """
+    global lag
     print(json.dumps(data))
-
-    directions = ['up', 'down', 'left', 'right']
-    direction = random.choice(directions)
-
-    return move_response(direction)
+    
+    food=data['board']['food']
+    '''[1-n][x,y]'''
+    you=data['you']['body']
+    '''x,y'''
+    print('----------')
+    print("food_left:",len(food))
+    print('----------')
+    directions= ['up', 'right', 'down', 'left']
+    return move_response(directions[data['turn']%4])
 
 
 @bottle.post('/end')
