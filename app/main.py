@@ -2,6 +2,7 @@ import json
 import os
 import random
 import bottle
+from draw_board import *
 
 from api import ping_response, start_response, move_response, end_response
 lag=5
@@ -28,13 +29,10 @@ def ping():
 @bottle.post('/start')
 def start():
     data = bottle.request.json
-    global lag
-    food=data['board']['food']
-    '''[1-n][x,y]'''
-    you=data['you']['body']
-        
+    index="0"*225
+    index=put_loc(index,data)
+    draw_board(15,index)
     
-    '''x,y'''
     
     """
     TODO: If you intend to have a stateful snake AI,
@@ -51,18 +49,12 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-    global lag
-    print(json.dumps(data))
+    index="0"*225
+    index=put_loc(index,data)
+    draw_board(15,index)
     
-    food=data['board']['food']
-    '''[1-n][x,y]'''
-    you=data['you']['body']
-    '''x,y'''
-    print('----------')
-    print("food_left:",len(food))
-    print('----------')
-    directions= ['up', 'right', 'down', 'left']
-    return move_response(directions[data['turn']%4])
+    
+    return move_response('up')
 
 
 @bottle.post('/end')
